@@ -17,17 +17,35 @@ public class DataMySQL {
             Class.forName(JDBC_DRIVER);
             System.out.println("连接数据库...");
             conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            System.out.println("已经连接数据库...");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
 
     public WeiboPost getPostByPID(long postID) throws SQLException {
+        // prepare statement
         PreparedStatement stmt = conn.prepareStatement("select * from weibo.weibo where id = ? limit 1");
         stmt.setLong(1, postID);
         ResultSet rs = stmt.executeQuery();
+
+        // create statement
+//        Statement stmt = conn.createStatement();
+//        String sql = "select * from weibo.weibo where id = " + String.valueOf(postID);
+//        ResultSet rs = stmt.executeQuery(sql);
+
         if (rs.next()) {
             return toWeiboPost(rs);
+        }
+        return null;
+
+    }
+
+    public ResultSet countRow() throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("select count(*) from weibo.weibo");
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs;
         } else {
             return null;
         }
@@ -47,9 +65,14 @@ public class DataMySQL {
     @Test
     public void testConstructor() throws SQLException {
         DataMySQL myDB = new DataMySQL();
+        // create statement
         Statement stmt = conn.createStatement();
-        String sql = "select * from weibo.weibo where id = 4510432600403896";
+        String sql = "select * from weibo.weibo where id = " + "4510432600403896";
         ResultSet rs = stmt.executeQuery(sql);
+
+        // TODO prepare statement always have a problem???
+//        PreparedStatement stmt = conn.prepareStatement("select * from weibo.weibo where id = 4451485259371300 limit 1");
+//        ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
             WeiboPost returnPost = new WeiboPost(rs);

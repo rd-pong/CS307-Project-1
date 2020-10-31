@@ -10,25 +10,39 @@ import java.sql.SQLException;
 
 public class DataTest {
     @Test
-    public void testGetPostByPID() throws SQLException {
-        DataMySQL myDB = new DataMySQL();
-        WeiboPost postByPID = myDB.getPostByPID(4510432600403896L);
-    }
-
-    @Test
-    public void testXlsxCount() throws IOException {
+    public void XlsxCount() throws IOException {
         FileInputStream fis = new FileInputStream(new File("data/db_85164_to_xlsx.xlsx"));
         XSSFWorkbook workbook = new XSSFWorkbook(fis);
         XSSFSheet spreadsheet = workbook.getSheetAt(0);
-        // System.out.println(spreadsheet.getLastRowNum());
+        System.out.println(spreadsheet.getLastRowNum());
         System.out.println(spreadsheet.getPhysicalNumberOfRows());
     }
 
     @Test
-    public void testXlsxToWeiboPost() throws IOException, SQLException {
-        DataXlsx myFile = new DataXlsx("data/db_38971_to_xlsx.xlsx");
-        XSSFRow myRow = myFile.getSpreadsheet().getRow(0);
+    public void DBCount() throws SQLException {
+        DataMySQL myDB = new DataMySQL();
+        myDB.countRow();
+    }
+
+    @Test
+    public void testXlsxToWeiboPost() throws IOException {
+        DataXlsx myFile = new DataXlsx("data/db_85164_to_xlsx.xlsx");
+        // zero row is label, getRow(1) is the first row
+        XSSFRow myRow = myFile.getSpreadsheet().getRow(1);
         WeiboPost mypost = DataXlsx.toWeiboPost(myRow);
+    }
+
+    //-------COMPARISON--------------
+    @Test
+    public void xlsxTest() throws IOException {
+        DataXlsx myFile = new DataXlsx("data/db_85164_to_xlsx.xlsx");
+        WeiboPost postByPID_xlsx = myFile.getPostByPID(4451487973180932L);
+    }
+
+    @Test
+    public void DBTest() throws SQLException {
+        DataMySQL myDB = new DataMySQL();
+        WeiboPost postByPID_DB = myDB.getPostByPID(4451487973180932L);
     }
 
 }
