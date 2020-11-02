@@ -66,7 +66,7 @@ public class WeiboPost {
     }
 
     /*
-     * constructor for xlsx query TODO
+     * constructor for xlsx query
      */
     public WeiboPost(XSSFRow xlsxRow) {
         this.id = Long.parseLong(xlsxRow.getCell(0).getStringCellValue());
